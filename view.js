@@ -38,12 +38,35 @@ function createDomElement(gameObj) {
                                 <button class="updateBtn">Save Changes</button>
                                 <button class="cancelBtn">Cancel</button>`;
         container1.appendChild(updateElement);
-    }
 
-    //display update form on button click 
-    document.getElementById(`${gameObj._id}`).addEventListener("click", displayForm());
-    // document.querySelectorAll("update-btn").onclick = displayForm();
+    
+    }
+   
   
+    // displayForm();
+ 
+  
+
+    // display update form on button click 
+  document.querySelectorAll('button.update-btn').forEach(btn => {
+        btn.addEventListener('click', event => {
+             displayForm();     
+            console.log(event.target);
+        })
+    })
+
+
+
+
+    // var btns = document.querySelectorAll('button.update-btn');
+    //     btns.forEach(function(btn){ 
+    //     btn.addEventListener('click', function(e){
+    //          displayForm();     
+    //         console.log(e.target);
+    //     });
+    // });
+
+
 
 
 
