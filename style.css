@@ -74,14 +74,14 @@ button {
 
 
 
-#updateForm {
+.updateForm {
     display: flex;
     flex-direction: column;
 }
 
-#updateForm >label,
-#updateForm >input,
-#updateForm >textarea 
+.updateForm >label,
+.updateForm >input,
+.updateForm >textarea 
 {
     display: block;
     margin: 5px 10px;
