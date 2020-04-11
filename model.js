@@ -40,24 +40,25 @@ function createGameRequest(gameObject, callbackCreateGame){
         return response.json();
     }).then(function(createdGame){
         console.log(createdGame);
+       
         callbackCreateGame(createdGame);
     });
 }
 
 
 //Update game
-function updateGameRequest(updatedGameObj, callbackCreateGame){
-    fetch(apiURL + "/games", {
-        method: "POST",
+function updateGameRequest(gameid, updatedGameObj, callbackUpdateGame){
+    fetch(apiURL + "/games/", + gameid, {
+        method: "PUT",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: gameObject
+        body: updatedGameObj
     }).then(function(response){
         return response.json();
-    }).then(function(updatedGame){
-        console.log(updatedGame);
-        callbackCreateGame(updatedGame);
+    }).then(function(updatedResponse){
+        console.log(updatedResponse);
+        callbackUpdateGame(updatedResponse);
     });
 }
 

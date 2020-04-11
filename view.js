@@ -40,27 +40,65 @@ function createDomElement(gameObj) {
     container1.appendChild(gameELement);
 
 
-    // display update form on button click 
-    
-    document.getElementById(`${gameObj._id}`).addEventListener("click", function(event){
-        console.log(event.target);
-        if(event.target.classList.contains('delete-btn')){
-            deleteGame(gameELement.getAttribute("id"), function(apiResponse){
-                console.log(event.target);
+    // display update form on button click / delete game on button click
+      
+    document.getElementById(`${gameObj._id}`).addEventListener("click", function (event) {
+        // console.log(event.target);
+        if (event.target.classList.contains('delete-btn')) {
+            deleteGame(gameELement.getAttribute("id"), function (apiResponse) {
+                // console.log(event.target);
                 console.log(apiResponse);
-            removeDeletedElementFromDOM(event.target.parentElement);
+                removeDeletedElementFromDOM(event.target.parentElement);
             })
-        } else if(event.target.classList.contains('update-btn')){
+        } else if (event.target.classList.contains('update-btn')) {
             gameELement.appendChild(updateGameElement);
-        }
+        } else if (event.target.classList.contains('cancelBtn')) {
+            removeDeletedElementFromDOM(updateGameElement);
+        } else if (event.target.classList.contains('updateBtn')) {
+            event.preventDefault();
+
+            //preluare valori din formularul de update
+            const updateGameTitle = updateGameElement.querySelector('#gameTitle').value;
+            const updateGameDescription = updateGameElement.querySelector('#gameDescription').value;
+            const updateGameImage = updateGameElement.querySelector('#gameImageUrl').value;
+
+            // gameELement.querySelector('h1').innerHTML = updateGameTitle;
+            // gameELement.querySelector('p').innerHTML = updateGameDescription;
+            // gameELement.querySelector('img').src = updateGameImage;
            
+            let updatedGameObj = {
+                title: updateGameTitle,
+                description: updateGameDescription,
+                imageUrl: updateGameImage
+ 
+            } //cum trimit valorile pe body?
+
+            var urlencoded  = new URLSearchParams(); //partea asta cu urlencoded e corecta? 
+            
+            urlencoded.append("title", updateGameTitle);
+            urlencoded.append("description", updateGameDescription);
+            urlencoded.append("imageUrl", updateGameImage);
+
+            updateGameRequest(urlencoded, createDomElement); // cum fac aici apel? nu inteleg 
+
+            //cum inlocuiesc valorile actuale in html?
+            //dc am eroare la js 51?
+            
+            removeDeletedElementFromDOM(updateGameElement);
+
+        }
+
     });
 }
+
 
 
 function removeDeletedElementFromDOM(domElement){
     domElement.remove();
 }
+
+
+
 
 
 //Validare
