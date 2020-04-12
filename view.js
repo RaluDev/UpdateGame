@@ -57,21 +57,11 @@ function createDomElement(gameObj) {
         } else if (event.target.classList.contains('updateBtn')) {
             event.preventDefault();
 
-            //preluare valori din formularul de update
+            // preluare valori din formularul de update
             const updateGameTitle = updateGameElement.querySelector('#gameTitle').value;
             const updateGameDescription = updateGameElement.querySelector('#gameDescription').value;
             const updateGameImage = updateGameElement.querySelector('#gameImageUrl').value;
 
-            // gameELement.querySelector('h1').innerHTML = updateGameTitle;
-            // gameELement.querySelector('p').innerHTML = updateGameDescription;
-            // gameELement.querySelector('img').src = updateGameImage;
-           
-            let updatedGameObj = {
-                title: updateGameTitle,
-                description: updateGameDescription,
-                imageUrl: updateGameImage
- 
-            } //cum trimit valorile pe body?
 
             var urlencoded  = new URLSearchParams(); //partea asta cu urlencoded e corecta? 
             
@@ -79,15 +69,18 @@ function createDomElement(gameObj) {
             urlencoded.append("description", updateGameDescription);
             urlencoded.append("imageUrl", updateGameImage);
 
-            updateGameRequest(urlencoded, createDomElement); // cum fac aici apel? nu inteleg 
+            //apelul asta nu inteleg cum sa il fac, cum adaug in html raspunsul de la api?
+            // - preiau valorile din formularul de update
+            // - le encodez cu urlencoded 
+            // - ce trimit pe update? tre sa scriu separat intr o functie?
+            // - cu ce parametrii tre sa apelez functia de updateGameRequest? dc valori am nevoie aici si dc?
 
-            //cum inlocuiesc valorile actuale in html?
-            //dc am eroare la js 51?
-            
-            removeDeletedElementFromDOM(updateGameElement);
-
+            updateGameRequest(gameObj._id, urlencoded, function(updatedResponse){
+               
+              createDomElement(updatedResponse);
+         
+            });
         }
-
     });
 }
 
@@ -96,7 +89,6 @@ function createDomElement(gameObj) {
 function removeDeletedElementFromDOM(domElement){
     domElement.remove();
 }
-
 
 
 
