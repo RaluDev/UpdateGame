@@ -19,22 +19,21 @@ function createDomElement(gameObj) {
                             <button class="delete-btn">Delete Game</button>
                             <button class="update-btn">Edit Game</button>`;
 
-
-    const updateGameElement = document.createElement("div");
-    updateGameElement.innerHTML = `<form class="updateForm">
-                        
+//creare update form
+    const updateGameElement = document.createElement("form");
+    updateGameElement.classList.add('updateForm');
+    updateGameElement.innerHTML = `
                                 <label for="gameTitle">Title *</label>
-                                <input type="text" value="${gameObj.title}" name="gameTitle" id="gameTitle"/>
+                                <input type="text" value="${gameObj.title}" name="gameTitle" id="Title"/>
 
                                 <label for="gameDescription">Description</label>
-                                <textarea name="gameDescription" id="gameDescription">${gameObj.description}</textarea>
+                                <textarea name="gameDescription" id="Description">${gameObj.description}</textarea>
                         
                                 <label for="gameImageUrl">Image URL *</label>
-                                <input type="text" name="gameImageUrl" id="gameImageUrl" value="${gameObj.imageUrl}"/>
+                                <input type="text" name="gameImageUrl" id="ImageUrl" value="${gameObj.imageUrl}"/>
                         
                                 <button class="updateBtn">Save Changes</button>
-                                <button class="cancelBtn">Cancel</button>
-                                </form>`;
+                                <button class="cancelBtn">Cancel</button>`;
 
 
     container1.appendChild(gameELement);
@@ -57,40 +56,38 @@ function createDomElement(gameObj) {
         } else if (event.target.classList.contains('updateBtn')) {
             event.preventDefault();
 
-            // preluare valori din formularul de update
-            const updateGameTitle = updateGameElement.querySelector('#gameTitle').value;
-            const updateGameDescription = updateGameElement.querySelector('#gameDescription').value;
-            const updateGameImage = updateGameElement.querySelector('#gameImageUrl').value;
-
-
-            var urlencoded  = new URLSearchParams(); //partea asta cu urlencoded e corecta? 
-            
-            urlencoded.append("title", updateGameTitle);
-            urlencoded.append("description", updateGameDescription);
-            urlencoded.append("imageUrl", updateGameImage);
-
-            //apelul asta nu inteleg cum sa il fac, cum adaug in html raspunsul de la api?
-            // - preiau valorile din formularul de update
-            // - le encodez cu urlencoded 
-            // - ce trimit pe update? tre sa scriu separat intr o functie?
-            // - cu ce parametrii tre sa apelez functia de updateGameRequest? dc valori am nevoie aici si dc?
-
-            updateGameRequest(gameObj._id, urlencoded, function(updatedResponse){
-               
-              createDomElement(updatedResponse);
-         
-            });
+            updateDomElement(event.target.parentElement.parentElement);
+            removeDeletedElementFromDOM(updateGameElement);
         }
     });
 }
 
+function updateDomElement(gameElement){
+    //luam valorile din update form, din cele trei inputuri
+    const newGameTitle = document.getElementById("Title").value;
+    const newGameDescription = document.getElementById("Description").value;
+    const newGameImageUrl = document.getElementById("ImageUrl").value;
+
+    //le atribuim la cele din gameElemen
+    gameElement.querySelector('h1').innerHTML = newGameTitle;
+    gameElement.querySelector('p').innerHTML = newGameDescription;
+    gameElement.querySelector('img').src = newGameImageUrl;
+
+    //le encodam cu url params
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("title", newGameTitle);
+    urlencoded.append("description", newGameDescription);
+    urlencoded.append("imageUrl", newGameImageUrl);
+    
+    //apelam functia de api cu id, urlencoded si create element
+    updateGameRequest(gameElement.id, urlencoded, createDomElement);
+    
+}
 
 
 function removeDeletedElementFromDOM(domElement){
     domElement.remove();
 }
-
-
 
 
 //Validare
