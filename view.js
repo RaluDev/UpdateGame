@@ -1,10 +1,16 @@
-//parcurgerea array-ului de jocuri
+const apiURL = new FetchApi('https://games-app-siit.herokuapp.com');
 
-getGamesList(function(arrayOfGames){
-    for(var i = 0; i < arrayOfGames.length; i++) {
+
+// Get games cu async
+async function getGames() {
+    const arrayOfGames = await apiURL.getGamesList();
+    for (var i = 0; i < arrayOfGames.length; i++) {
         createDomElement(arrayOfGames[i]);
     }
-});
+}
+
+getGames();
+
 
 
 //creare div pentru fiecare joc si adaugare in DOM
@@ -42,13 +48,15 @@ function createDomElement(gameObj) {
     // display update form on button click / delete game on button click
       
     document.getElementById(`${gameObj._id}`).addEventListener("click", function (event) {
-        // console.log(event.target);
+        console.log(gameObj);
         if (event.target.classList.contains('delete-btn')) {
-            deleteGame(gameELement.getAttribute("id"), function (apiResponse) {
-                // console.log(event.target);
-                console.log(apiResponse);
+            // deleteGame cu async
+            async function deleteG() {
+                const target = await apiURL.deleteGame(`${gameObj._id}`);
                 removeDeletedElementFromDOM(event.target.parentElement);
-            })
+            } 
+            deleteG();
+
         } else if (event.target.classList.contains('update-btn')) {
             gameELement.appendChild(updateGameElement);
         } else if (event.target.classList.contains('cancelBtn')) {
@@ -62,7 +70,7 @@ function createDomElement(gameObj) {
     });
 }
 
-function updateDomElement(gameElement){
+function updateDomElement(gameElement) {
     //luam valorile din update form, din cele trei inputuri
     const newGameTitle = document.getElementById("Title").value;
     const newGameDescription = document.getElementById("Description").value;
@@ -78,27 +86,31 @@ function updateDomElement(gameElement){
     urlencoded.append("title", newGameTitle);
     urlencoded.append("description", newGameDescription);
     urlencoded.append("imageUrl", newGameImageUrl);
-    
+
     //apelam functia de api cu id, urlencoded si create element
-    updateGameRequest(gameElement.id, urlencoded, createDomElement);
-    
+
+    // updateGameRequest cu async
+    async function update() {
+        const updatedG = await apiURL.updateGameRequest (gameElement.id, urlencoded);
+    }
+    update();
 }
 
 
-function removeDeletedElementFromDOM(domElement){
+function removeDeletedElementFromDOM(domElement) {
     domElement.remove();
 }
 
 
 //Validare
 
-function validateFormElement(inputElement, errorMessage){
-    if(inputElement.value === "") {
-        if(!document.querySelector('[rel="' + inputElement.id + '"]')){
+function validateFormElement(inputElement, errorMessage) {
+    if (inputElement.value === "") {
+        if (!document.querySelector('[rel="' + inputElement.id + '"]')) {
             buildErrorMessage(inputElement, errorMessage);
         }
     } else {
-        if(document.querySelector('[rel="' + inputElement.id + '"]')){
+        if (document.querySelector('[rel="' + inputElement.id + '"]')) {
             console.log("the error is erased!");
             document.querySelector('[rel="' + inputElement.id + '"]').remove();
             inputElement.classList.remove("inputError");
@@ -106,18 +118,18 @@ function validateFormElement(inputElement, errorMessage){
     }
 }
 
-function validateReleaseTimestampElement(inputElement, errorMessage){
-    if(isNaN(inputElement.value) && inputElement.value !== "") {
+function validateReleaseTimestampElement(inputElement, errorMessage) {
+    if (isNaN(inputElement.value) && inputElement.value !== "") {
         buildErrorMessage(inputElement, errorMessage);
     }
 }
 
-function buildErrorMessage(inputEl, errosMsg){
+function buildErrorMessage(inputEl, errosMsg) {
     inputEl.classList.add("inputError");
     const errorMsgElement = document.createElement("span");
     errorMsgElement.setAttribute("rel", inputEl.id);
     errorMsgElement.classList.add("errorMsg");
-    errorMsgElement.innerHTML = errosMsg;c
+    errorMsgElement.innerHTML = errosMsg; 
     inputEl.after(errorMsgElement);
 }
 
@@ -151,7 +163,11 @@ document.querySelector(".submitBtn").addEventListener("click", function(event){
         urlencoded.append("imageUrl", gameImageUrl.value);
         urlencoded.append("description", gameDescription.value);
 
-        createGameRequest(urlencoded, createDomElement);
+        // createGameRequest cu async
+        async function create() {
+            const games = await apiURL.createGameRequest(urlencoded).then(createDomElement);
+        }
+        create();
     }
 })
 
